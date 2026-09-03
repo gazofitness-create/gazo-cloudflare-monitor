@@ -1,0 +1,42 @@
+name: Gazo Fitness Cloudflare Monitor
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"
+
+jobs:
+  test:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          npm init -y
+          npm install -D @playwright/test
+          npx playwright install --with-deps firefox chromium
+
+      - name: Run Firefox test
+        run: npx playwright test --project=firefox
+
+      - name: Run Chrome test
+        run: npx playwright test --project=chromium
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
