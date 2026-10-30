@@ -1,9 +1,8 @@
+
 name: Gazo Fitness Cloudflare Monitor
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "*/10 * * * *"
 
 jobs:
   test:
